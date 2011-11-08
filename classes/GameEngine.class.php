@@ -9,19 +9,29 @@
  
 class GameEngine extends ObjectAbstract {
 
+	// DON'T CHANGE THESE
 	const WATER = "_";
 	const HIT = "X";
 	const MISS = "O";
-	
+
+	// OR THESE... a baby kitten will cry everytime you change this... honest!
 	const AIRCRAFT = "Aircraft";
 	const BATTLESHIP = "Battleship";
 	const DESTROYER = "Destroyer";
 	const SUBMARINE = "Submarine";
 	const PATROLBOAT = "PatrolBoat";
 
+	// Change this values to update board size
 	const WIDTH = 10;
 	const HEIGHT = 10;
 
+	/**
+	 * Render board HTML
+	 *
+	 * @static
+	 * @param string $name
+	 * @return void
+	 */
 	static public function renderBoard($name = "") {
 		echo "<table class=\"$name\">";
 		for($i = 1; $i <= self::HEIGHT; $i++) {
@@ -34,6 +44,12 @@ class GameEngine extends ObjectAbstract {
 		echo "</table>";
 	}
 
+	/**
+	 * Render ship list HTML
+	 *
+	 * @static
+	 * @return void
+	 */
 	static public function renderShipList() {
 		$shipArray = array(self::PATROLBOAT,self::SUBMARINE,self::DESTROYER,self::BATTLESHIP,self::AIRCRAFT);
 		echo '<ul>';
@@ -45,6 +61,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Clear both boards databases
+	 *
 	 * @return void
 	 */
 	public function clearBoards() {
@@ -53,12 +71,20 @@ class GameEngine extends ObjectAbstract {
 		$this->setBoardData(null);
 	}
 
+	/**
+	 * Clear a single board database
+	 *
+	 * @param $boardName
+	 * @return void
+	 */
 	public function clearBoard($boardName) {
 		@unlink("db/".$boardName);
 		$this->setBoardData(null);
 	}
 
 	/**
+	 * Place random ships around the board algorythm
+	 *
 	 * @param string $boardName Board name
 	 * @return string
 	 */
@@ -123,6 +149,9 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Retreave a random position, without taking into account the rules
+	 * This is just an auxiliar method
+	 *
 	 * @return array
 	 */
 	protected function getRandomPosition() {
@@ -131,6 +160,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Get the given position or return false if something bad happens
+	 *
 	 * @param $position
 	 * @return bool
 	 */
@@ -158,6 +189,9 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Attack!!!!
+	 * Yup, that's all this does... but it does it well :P
+	 *
 	 * @param $position
 	 * @return string
 	 */
@@ -203,6 +237,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Check if the game is over for a given board
+	 *
 	 * @param null $boardName
 	 * @return bool
 	 */
@@ -225,6 +261,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Auxiliary method for the better than random attack pattern
+	 *
 	 * @param string $positionString
 	 * @return void
 	 */
@@ -298,6 +336,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Public method to set a position with a given boat. It works on a 1x1 basis
+	 *
 	 * @param string $positionString
 	 * @param string $ship
 	 * @return string
@@ -316,6 +356,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Convert string based data to struture base data (array)
+	 *
 	 * @param string $data
 	 * @return array
 	 */
@@ -332,6 +374,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Convert structure based data (array) to string base data
+	 *
 	 * @param array $data
 	 * @return array|string
 	 */
@@ -347,6 +391,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Load database data and store it in memory
+	 *
 	 * @param null $boardName
 	 * @return void
 	 */
@@ -367,6 +413,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Save board data to database
+	 *
 	 * @param null $boardName
 	 * @return void
 	 */
@@ -380,6 +428,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Extract position form a board-_x_ pattern
+	 *
 	 * @param string $position
 	 * @return void
 	 */
@@ -393,6 +443,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Extract board name form a board-_x_ pattern
+	 *
 	 * @param string $position
 	 * @return void
 	 */
@@ -405,6 +457,9 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Fill the board with water.
+	 * This is static so that it can be accessed from any place in the programming environment
+	 *
 	 * @static
 	 * @return array
 	 */
@@ -417,6 +472,8 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Internal method that stores a position on the database
+	 *
 	 * @return string
 	 */
 	protected function storePosition() {

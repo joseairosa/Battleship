@@ -49,7 +49,7 @@ try {
 	<header>
 		<div style="padding: 20px 0 0 40px;">
 			<input type="button" id="start_game" value="Start Game">
-			<input type="button" id="random_place" value="Start Game & Place Random">
+			<input type="button" id="random_place" value="Place Random">
 		</div>
 	</header>
 	<div id="main" role="main" class="clearfix">

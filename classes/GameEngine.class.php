@@ -129,6 +129,10 @@ class GameEngine extends ObjectAbstract {
 		return $randomPositionArray;
 	}
 
+	/**
+	 * @param $position
+	 * @return bool
+	 */
 	public function getPosition($position) {
 		if(!is_array($position)) {
 			// Extract required data from position string
@@ -152,6 +156,10 @@ class GameEngine extends ObjectAbstract {
 		}
 	}
 
+	/**
+	 * @param $position
+	 * @return string
+	 */
 	public function attack($position) {
 		$squareInfo = $this->getPosition($position);
 		if($squareInfo != self::WATER && $squareInfo != self::HIT) {
@@ -167,12 +175,19 @@ class GameEngine extends ObjectAbstract {
 		return self::WATER;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function computerAttack() {
 		$positionArray = $this->getRandomPosition();
 		$positionString = 'player-'.$positionArray[0].'x'.$positionArray[1];
 		return array('result' => $this->attack($positionString), 'position' => $positionString);
 	}
 
+	/**
+	 * @param null $boardName
+	 * @return bool
+	 */
 	public function isGameOver($boardName = null) {
 		// @todo Implement manual board name check
 		$isGameOver = false;
@@ -191,6 +206,10 @@ class GameEngine extends ObjectAbstract {
 		return $isGameOver;
 	}
 
+	/**
+	 * @param string $positionString
+	 * @return void
+	 */
 	protected function closePositionFinder($positionString = "") {
 		
 	}
@@ -260,6 +279,11 @@ class GameEngine extends ObjectAbstract {
 		return $result;
 	}
 
+	/**
+	 * @param string $positionString
+	 * @param string $ship
+	 * @return string
+	 */
 	public function setPosition($positionString = "", $ship = "") {
 		$positions = explode(",",$positionString);
 		foreach($positions as $position) {
@@ -273,6 +297,10 @@ class GameEngine extends ObjectAbstract {
 		return "ok";
 	}
 
+	/**
+	 * @param string $data
+	 * @return array
+	 */
 	protected function convertStringToStructure($data = "") {
 		$tmp = array();
 		// Convert data to readable format to be stored in db
@@ -285,6 +313,10 @@ class GameEngine extends ObjectAbstract {
 		return $tmp;
 	}
 
+	/**
+	 * @param array $data
+	 * @return array|string
+	 */
 	protected function convertStructureToString($data = array()) {
 		$tmp = array();
 		// Convert data to readable format to be stored in db
@@ -296,6 +328,10 @@ class GameEngine extends ObjectAbstract {
 		return $tmp;
 	}
 
+	/**
+	 * @param null $boardName
+	 * @return void
+	 */
 	public function loadData($boardName = null) {
 		// Overwrite board name if user defined
 		if(!is_null($boardName) && $this->getBoardName() != "") {
@@ -312,6 +348,10 @@ class GameEngine extends ObjectAbstract {
 		}
 	}
 
+	/**
+	 * @param null $boardName
+	 * @return void
+	 */
 	protected function saveData($boardName = null) {
 		// Overwrite board name if user defined
 		if(!is_null($boardName) && $this->getBoardName() == "") {
@@ -321,6 +361,10 @@ class GameEngine extends ObjectAbstract {
 		@file_put_contents("db/".$this->getBoardName(),implode("\n",$tmp));
 	}
 
+	/**
+	 * @param string $position
+	 * @return void
+	 */
 	protected function extractPosition($position = "") {
 		if(preg_match("/[A-Za-z]+\-[0-9]+x[0-9]+/",$position)) {
 			$tmp = explode("-",$position);
@@ -330,6 +374,10 @@ class GameEngine extends ObjectAbstract {
 		}
 	}
 
+	/**
+	 * @param string $position
+	 * @return void
+	 */
 	protected function extractBoardName($position = "") {
 		if(preg_match("/[A-Za-z]+\-[0-9]+x[0-9]+/",$position)) {
 			$tmp = explode("-",$position);
@@ -338,6 +386,10 @@ class GameEngine extends ObjectAbstract {
 		}
 	}
 
+	/**
+	 * @static
+	 * @return array
+	 */
 	static protected function fillWithWater() {
 		$tmp = array();
 		for($i=1;$i<=self::HEIGHT;$i++) {
@@ -346,6 +398,9 @@ class GameEngine extends ObjectAbstract {
 		return $tmp;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function storePosition() {
 		$data = $this->getBoardData();
 		$position = $this->getShipPositionArray();

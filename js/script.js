@@ -5,6 +5,9 @@
 var amountSelected = 0;
 var tmpSelection = [];
 
+var playerTurn = true;
+var computerTurn = false;
+
 function setPosition() {
 	var position = "";
 	console.log(tmpSelection);
@@ -60,6 +63,37 @@ function applySelection() {
 	}
 }
 
+function startGame() {
+	// Start computer free will
+	setInterval("gogoComputerSan();",1000);
+	// Remove player capability to set pieces
+	$(".player td").unbind('click');
+}
+
+function gogoComputerSan() {
+	if(computerTurn) {
+		$.ajax({
+			type: "POST",
+			url: "ajax.php",
+			data: "command=computerAttack",
+			success: function(data) {
+				var json = $.parseJSON(data);
+				console.log(json);
+				if(json.result == "_") {
+					caller.attr('class','').addClass('water');
+				} else if(json.result == "X") {
+					caller.attr('class','').addClass('hit');
+				}
+				if(json.gameover) {
+					alert("GAMEOVER\n\nPlayer won!");
+				}
+				computerTurn = true;
+				playerTurn = false;
+			}
+		});
+	}
+}
+
 $(function() {
 
 	$("#random_place").click(function(){
@@ -85,10 +119,35 @@ $(function() {
 		});
 	});
 	
-	$("td").click(function() {
+	$(".player td").click(function() {
 		tmpSelection.push($(this).attr("id"));
 		applySelection();
 		checkSelectionForShips();
+	});
+
+	$(".computer td").click(function(){
+		var caller = $(this);
+		if(playerTurn) {
+			$.ajax({
+				type: "POST",
+				url: "ajax.php",
+				data: "command=attack&position="+$(this).attr("id"),
+				success: function(data) {
+					var json = $.parseJSON(data);
+					console.log(json);
+					if(json.result == "_") {
+						caller.attr('class','').addClass('water');
+					} else if(json.result == "X") {
+						caller.attr('class','').addClass('hit');
+					}
+					if(json.gameover) {
+						alert("GAMEOVER\n\nPlayer won!");
+					}
+					computerTurn = true;
+					playerTurn = false;
+				}
+			});
+		}
 	});
 
 	$("#clearSelection").click(function(){

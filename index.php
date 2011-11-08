@@ -12,6 +12,7 @@ include_once 'init.php';
 
 $ge = new GameEngine();
 $ge->clearBoards();
+$ge->placeRandom("computer");
 
 try {
 	//Debug::show($api->getTravelPlan());

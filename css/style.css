@@ -92,6 +92,14 @@ td.fixed {
     background-color: #5E740B !important;
 }
 
+td.hit {
+    background-color: red;
+}
+
+td.water {
+    background-color: #0000ee;
+}
+
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .ir br { display: none; }

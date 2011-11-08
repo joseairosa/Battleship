@@ -57,7 +57,7 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
-	 * @param $boardName Board name
+	 * @param string $boardName Board name
 	 * @return string
 	 */
 	public function placeRandom($boardName) {
@@ -128,8 +128,64 @@ class GameEngine extends ObjectAbstract {
 		return $randomPositionArray;
 	}
 
-	protected function closePositionFinder($positionString = "") {
+	public function getPosition($position) {
+		if(!is_array($position)) {
+			// Extract required data from position string
+			$this->extractPosition($position);
+			$this->extractBoardName($position);
+			$positionArray = $this->getShipPositionArray();
+		} else {
+			$positionArray = $position;
+		}
 
+		// Load data based on board name only if we don't already have in memory
+		if($this->getBoardData() == "") {
+			$this->loadData();
+		}
+		$gameDataArray = $this->getBoardData();
+
+		if(isset($gameDataArray[$positionArray[0]][$positionArray[1]])) {
+			return $gameDataArray[$positionArray[0]][$positionArray[1]];
+		} else {
+			return false;
+		}
+	}
+
+	public function attack($position) {
+		$squareInfo = $this->getPosition($position);
+		if($squareInfo != self::WATER && $squareInfo != self::HIT) {
+			$gameDataArray = $this->getBoardData();
+			$positionArray = $this->getShipPositionArray();
+
+			$gameDataArray[$positionArray[0]][$positionArray[1]] = self::HIT;
+			$this->setBoardData($gameDataArray);
+			$this->saveData();
+
+			return self::HIT;
+		}
+		return self::WATER;
+	}
+
+	public function isGameOver($boardName = null) {
+		// @todo Implement manual board name check
+		$isGameOver = false;
+		$tmp = array();
+		if(is_null($boardName)) {
+			$gameDataArray = $this->getBoardData();
+			// Nice and easy way to optimize the algorythm but concatenating the struture to a unique array...
+			foreach($gameDataArray as $gameDataLineArray) {
+				$tmp = array_unique(array_merge($tmp,$gameDataLineArray));
+			}
+		}
+		// ... and now we just need to check if we only have water and hit on the array. If so, the user just lost the game
+		if(count($tmp) == 2 && in_array(self::WATER,$tmp) && in_array(self::HIT,$tmp)) {
+			$isGameOver = true;
+		}
+		return $isGameOver;
+	}
+
+	protected function closePositionFinder($positionString = "") {
+		
 	}
 
 	/**
@@ -157,7 +213,7 @@ class GameEngine extends ObjectAbstract {
 			}
 
 			// Check if it's not overlapping other position
-			if($gameDataArray[$tmp1[0]][$tmp1[1]] != self::WATER) {
+			if($this->getPosition($tmp1) != self::WATER) {
 				return false;
 			}
 
@@ -203,7 +259,7 @@ class GameEngine extends ObjectAbstract {
 			$this->extractPosition($position);
 			$this->extractBoardName($position);
 			$this->setShip(Loader::load($ship));
-			// Conver file data to structure (array)
+			// Convert file data to structure (array)
 			$this->loadData();
 			$this->storePosition();
 		}

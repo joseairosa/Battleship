@@ -13,6 +13,7 @@ if(isset($_POST) && !empty($_POST)) {
 				}
 				break;
 			case 'setRandomBoard':
+				$ge->clearBoards();
 				echo $ge->placeRandom($_POST['board']);
 		}
 	}

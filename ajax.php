@@ -13,11 +13,14 @@ if(isset($_POST) && !empty($_POST)) {
 				}
 				break;
 			case 'setRandomBoard':
-				$ge->clearBoards();
+				$ge->clearBoard('player');
 				echo json_encode($ge->placeRandom($_POST['board']));
 				break;
 			case 'attack':
 				echo json_encode(array('result' => $ge->attack($_POST['position']), 'gameover' => $ge->isGameOver()));
+				break;
+			case 'computerAttack':
+				echo json_encode(array('result' => $ge->computerAttack(), 'gameover' => $ge->isGameOver()));
 				break;
 		}
 	}

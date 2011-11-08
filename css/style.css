@@ -93,11 +93,11 @@ td.fixed {
 }
 
 td.hit {
-    background-color: red;
+    background-color: red !important;
 }
 
 td.water {
-    background-color: #0000ee;
+    background-color: #0000ee !important;
 }
 
 /* ==|== non-semantic helper classes ======================================== */

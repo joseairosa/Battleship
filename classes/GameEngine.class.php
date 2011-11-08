@@ -52,8 +52,9 @@ class GameEngine extends ObjectAbstract {
 		$this->setBoardData(null);
 	}
 
-	public function clearBoard() {
-
+	public function clearBoard($boardName) {
+		@unlink("db/".$boardName);
+		$this->setBoardData(null);
 	}
 
 	/**
@@ -121,7 +122,7 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
-	 * @return bool
+	 * @return array
 	 */
 	protected function getRandomPosition() {
 		$randomPositionArray = array(rand(1,self::WIDTH),rand(1,self::HEIGHT));
@@ -164,6 +165,12 @@ class GameEngine extends ObjectAbstract {
 			return self::HIT;
 		}
 		return self::WATER;
+	}
+
+	public function computerAttack() {
+		$positionArray = $this->getRandomPosition();
+		$positionString = 'player-'.$positionArray[0].'x'.$positionArray[1];
+		return array('result' => $this->attack($positionString), 'position' => $positionString);
 	}
 
 	public function isGameOver($boardName = null) {

@@ -64,10 +64,35 @@ function applySelection() {
 }
 
 function startGame() {
-	// Start computer free will
-	setInterval("gogoComputerSan();",1000);
 	// Remove player capability to set pieces
 	$(".player td").unbind('click');
+	// Start computer free will
+	setInterval("gogoComputerSan();",1000);
+
+	// Give interaction to computer board
+	$(".computer td").click(function(){
+		var caller = $(this);
+		if(playerTurn) {
+			$.ajax({
+				type: "POST",
+				url: "ajax.php",
+				data: "command=attack&position="+$(this).attr("id"),
+				success: function(data) {
+					var json = $.parseJSON(data);
+					if(json.result == "_") {
+						caller.attr('class','').addClass('water');
+					} else if(json.result == "X") {
+						caller.attr('class','').addClass('hit');
+					}
+					if(json.gameover) {
+						alert("GAMEOVER\n\nPlayer won!");
+					}
+					computerTurn = true;
+					playerTurn = false;
+				}
+			});
+		}
+	});
 }
 
 function gogoComputerSan() {
@@ -79,16 +104,17 @@ function gogoComputerSan() {
 			success: function(data) {
 				var json = $.parseJSON(data);
 				console.log(json);
-				if(json.result == "_") {
+				var caller = $("#"+json.result.position);
+				if(json.result.result == "_") {
 					caller.attr('class','').addClass('water');
-				} else if(json.result == "X") {
+				} else if(json.result.result == "X") {
 					caller.attr('class','').addClass('hit');
 				}
 				if(json.gameover) {
-					alert("GAMEOVER\n\nPlayer won!");
+					alert("GAMEOVER\n\nComputer won! LOOOOOSER :P");
 				}
-				computerTurn = true;
-				playerTurn = false;
+				computerTurn = false;
+				playerTurn = true;
 			}
 		});
 	}
@@ -118,36 +144,15 @@ $(function() {
 			}
 		});
 	});
+
+	$("#start_game").click(function(){
+		startGame();
+	});
 	
 	$(".player td").click(function() {
 		tmpSelection.push($(this).attr("id"));
 		applySelection();
 		checkSelectionForShips();
-	});
-
-	$(".computer td").click(function(){
-		var caller = $(this);
-		if(playerTurn) {
-			$.ajax({
-				type: "POST",
-				url: "ajax.php",
-				data: "command=attack&position="+$(this).attr("id"),
-				success: function(data) {
-					var json = $.parseJSON(data);
-					console.log(json);
-					if(json.result == "_") {
-						caller.attr('class','').addClass('water');
-					} else if(json.result == "X") {
-						caller.attr('class','').addClass('hit');
-					}
-					if(json.gameover) {
-						alert("GAMEOVER\n\nPlayer won!");
-					}
-					computerTurn = true;
-					playerTurn = false;
-				}
-			});
-		}
 	});
 
 	$("#clearSelection").click(function(){

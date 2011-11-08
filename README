@@ -1,1 +1,35 @@
-This file was created by JetBrains PhpStorm 2.1.5 for binding GitHub repository
+Battleship Game
+
+Bakckend: PHP
+Frontend: HTML, CSS and JavaScript
+
+The base concept is simple, deploy the Battleship game recurring to recent technologies with some basic rules.
+
+======
+
+RULES
+
+* Each player gets their own board which is a grid of 10×10 spaces.
+* 5 ships get placed on the board and take up a number of spaces on the grid in a straight line in any orientation (only one ship can occupy any given square): Aircraft-Carrier (5 spaces) Battleship (4 spaces) Destroyer (3 spaces) Submarine (3 spaces) * Patrol Boat (2 space)
+* A player’s board is not visible to their opponent.
+* Gameplay happens in rounds, each player taking turns attacking the other.
+* A player’s turn consists of announcing a space on their opponent’s board to attack.
+* If their opponent has a ship occupying that space, then that ship takes a point of damage in that space.
+* When all the spaces occupied by a ship has been hit, it is considered sunk.
+* The first player to have all their ships sunk loses the game.
+
+======
+
+FEATURES
+
+* This game is played between human and computer.
+* The computer player must place their own ships on the board.
+* You may decide whether you’ll allow the human player to place their own ships or use the same algorithm as above to place them automatically.
+* The computer’s attack pattern can be, and should probably start as, a random one, with the potential for making it more advanced later.
+* Human players can view two boards, the first one with their ships and status, the second with the the result of their attacks on their computer opponent.
+
+======
+
+Examples
+
+Soon...

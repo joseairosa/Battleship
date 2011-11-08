@@ -188,6 +188,9 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Computer attack logic goes here
+	 *
+	 * @todo For now it's random attack only but it will be implemented a better than random attack logic
 	 * @return array
 	 */
 	public function computerAttack() {

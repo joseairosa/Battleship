@@ -49,6 +49,7 @@ try {
 	<header id="header">
 		<div style="padding: 20px 0 0 40px;">
 			<input type="button" id="start_game" value="Start Game">
+			<input type="button" id="start_3_turn_game" value="Start 3 Turn Game Mode">
 			<input type="button" id="random_place" value="Place Random">
 		</div>
 	</header>

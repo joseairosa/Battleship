@@ -2,6 +2,7 @@ Battleship Game
 
 Bakckend: PHP
 Frontend: HTML, CSS and JavaScript
+Pre-made Code: For this project HTML5 Boilerplate was used as well as some base classes (Debug and ObjectAbstract) that are abstracted from the main concept of this solution and therefore used as support.
 
 The base concept is simple, deploy the Battleship game recurring to recent technologies with some basic rules.
 

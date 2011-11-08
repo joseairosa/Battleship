@@ -31,6 +31,12 @@ FEATURES
 
 ======
 
+KNOWN BUGS
+
+* Sometimes the random placing algorythm will enter a deadlock
+
+======
+
 Examples
 
 Soon...

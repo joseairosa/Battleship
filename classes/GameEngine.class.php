@@ -11,6 +11,7 @@ class GameEngine extends ObjectAbstract {
 
 	const WATER = "_";
 	const HIT = "X";
+	const MISS = "O";
 	
 	const AIRCRAFT = "Aircraft";
 	const BATTLESHIP = "Battleship";
@@ -162,7 +163,8 @@ class GameEngine extends ObjectAbstract {
 	 */
 	public function attack($position) {
 		$squareInfo = $this->getPosition($position);
-		if($squareInfo != self::WATER && $squareInfo != self::HIT) {
+		// In this case we've hit a ship
+		if($squareInfo != self::WATER && $squareInfo != self::HIT && $squareInfo != self::MISS) {
 			$gameDataArray = $this->getBoardData();
 			$positionArray = $this->getShipPositionArray();
 
@@ -172,15 +174,28 @@ class GameEngine extends ObjectAbstract {
 
 			return self::HIT;
 		}
-		return self::WATER;
+		// Here we've hit water, plain and simple
+		elseif($squareInfo == self::WATER) {
+			$gameDataArray = $this->getBoardData();
+			$positionArray = $this->getShipPositionArray();
+
+			$gameDataArray[$positionArray[0]][$positionArray[1]] = self::MISS;
+			$this->setBoardData($gameDataArray);
+			$this->saveData();
+			return self::WATER;
+		}
+		return $squareInfo;
 	}
 
 	/**
 	 * @return array
 	 */
 	public function computerAttack() {
-		$positionArray = $this->getRandomPosition();
-		$positionString = 'player-'.$positionArray[0].'x'.$positionArray[1];
+		do {
+			$positionArray = $this->getRandomPosition();
+			$positionString = 'player-'.$positionArray[0].'x'.$positionArray[1];
+			$squareInfo = $this->getPosition($positionString);
+		} while($squareInfo == self::HIT && $squareInfo == self::MISS);
 		return array('result' => $this->attack($positionString), 'position' => $positionString);
 	}
 

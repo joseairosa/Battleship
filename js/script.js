@@ -66,6 +66,11 @@ function applySelection() {
 function startGame() {
 	// Remove player capability to set pieces
 	$(".player td").unbind('click');
+
+	// Remove buttons that are not needed anymore
+	$("#header").html('');
+	$("#footer").html('');
+	
 	// Start computer free will
 	setInterval("gogoComputerSan();",1000);
 
@@ -109,6 +114,8 @@ function gogoComputerSan() {
 					caller.attr('class','').addClass('water');
 				} else if(json.result.result == "X") {
 					caller.attr('class','').addClass('hit');
+				} else if(json.result.result == "O") {
+					caller.attr('class','').addClass('water');
 				}
 				if(json.gameover) {
 					alert("GAMEOVER\n\nComputer won! LOOOOOSER :P");
@@ -137,7 +144,7 @@ $(function() {
 					$.each(columnValue, function(lineKey, lineValue) {
 						// If we find water, change it to ship selector
 						if (lineValue != "_") {
-							$("#player-" + lineKey + "x" + columnKey).removeClass("selected").addClass("fixed");
+							$("#player-" + columnKey + "x" + lineKey).removeClass("selected").addClass("fixed");
 						}
 					});
 				});

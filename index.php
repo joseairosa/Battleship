@@ -46,7 +46,7 @@ try {
 <body>
 
 <div id="container">
-	<header>
+	<header id="header">
 		<div style="padding: 20px 0 0 40px;">
 			<input type="button" id="start_game" value="Start Game">
 			<input type="button" id="random_place" value="Place Random">
@@ -60,7 +60,7 @@ try {
 			<?php GameEngine::renderBoard("computer");?>
 		</div>
 	</div>
-	<footer>
+	<footer id="footer">
 		<?php GameEngine::renderShipList();?>
 		<div style="padding: 0 0 20px 40px;">
 			<input type="button" name="placeSelection" id="placeSelection" value="Place Ship"> <input type="button" name="clearSelection" id="clearSelection" value="Clear Selection">

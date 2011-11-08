@@ -63,10 +63,10 @@ class GameEngine extends ObjectAbstract {
 	public function placeRandom($boardName) {
 		$shipArray = array(self::PATROLBOAT,self::SUBMARINE,self::DESTROYER,self::BATTLESHIP,self::AIRCRAFT);
 
-		$this->loadData($boardName);
-
 		// @todo - Check if the given board name exists
 		$this->setBoardName($boardName);
+
+		$this->loadData();
 
 		// Step 1 - Iterate through all of the ships and place them
 		foreach($shipArray as $ship) {
@@ -108,7 +108,7 @@ class GameEngine extends ObjectAbstract {
 					}
 					$positionArray[] = $this->getBoardName()."-".$xTmp."x".$yTmp;
 				}
-				echo implode(",",$positionArray)."\n";
+				
 				$hasPosition = $this->checkPosition(implode(",",$positionArray));
 			} while($hasPosition == false);
 			
@@ -141,15 +141,23 @@ class GameEngine extends ObjectAbstract {
 	public function checkPosition($positionString = "") {
 		$positions = explode(",",$positionString);
 
+		$gameDataArray = $this->getBoardData();
+
 		$allPositionsX = array();
 		$allPositionsY = array();
 
+		// Iterate all positions and store them on secondary arrays for later analysis
 		foreach($positions as $position) {
 			$this->extractPosition($position);
 			$tmp1 = $this->getShipPositionArray();
 			
 			// Check if we're not out of bounds
 			if($tmp1[0] <= 0 || $tmp1[0] > self::WIDTH || $tmp1[1] <= 0 || $tmp1[1] > self::HEIGHT) {
+				return false;
+			}
+
+			// Check if it's not overlapping other position
+			if($gameDataArray[$tmp1[0]][$tmp1[1]] != self::WATER) {
 				return false;
 			}
 
@@ -185,9 +193,6 @@ class GameEngine extends ObjectAbstract {
 		} else {
 			$result = false;
 		}
-
-		// @todo Check if it's not overlapping other position
-		
 
 		return $result;
 	}

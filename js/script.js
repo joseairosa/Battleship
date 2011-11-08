@@ -67,8 +67,20 @@ $(function() {
 			type: "POST",
 			url: "ajax.php",
 			data: "command=setRandomBoard&board=player",
-			success: function( data ) {
-				
+			success: function(data) {
+				// Parse data to JSON
+				var json = $.parseJSON(data);
+				// Clear all selections
+				$("td").removeClass("selected").removeClass("fixed");
+				// Iterate through all values
+				$.each(json, function(columnKey, columnValue) {
+					$.each(columnValue, function(lineKey, lineValue) {
+						// If we find water, change it to ship selector
+						if (lineValue != "_") {
+							$("#player-" + lineKey + "x" + columnKey).removeClass("selected").addClass("fixed");
+						}
+					});
+				});
 			}
 		});
 	});

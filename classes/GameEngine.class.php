@@ -116,8 +116,8 @@ class GameEngine extends ObjectAbstract {
 				$this->setPosition($position,$shipObj->getShortName());
 			}
 		}
-
-		return implode("\n",$this->convertStructureToString($this->getBoardData()));
+		// @todo Only return the values that have ships and not the ones with water. It's always good policy to remove weight from client side
+		return $this->getBoardData();
 	}
 
 	/**

@@ -283,26 +283,31 @@ class GameEngine extends ObjectAbstract {
 
 		$allPositionsX = array();
 		$allPositionsY = array();
-
+		
 		// Iterate all positions and store them on secondary arrays for later analysis
 		foreach($positions as $position) {
-			$this->extractPosition($position);
-			$tmp1 = $this->getShipPositionArray();
-			
-			// Check if we're not out of bounds
-			if($tmp1[0] <= 0 || $tmp1[0] > self::WIDTH || $tmp1[1] <= 0 || $tmp1[1] > self::HEIGHT) {
-				return false;
-			}
+			if(!empty($position)) {
+				$this->extractPosition($position);
+				$this->extractBoardName($position);
+				$this->loadData();
+				
+				$tmp1 = $this->getShipPositionArray();
 
-			// Check if it's not overlapping other position
-			if($this->getPosition($tmp1) != self::WATER) {
-				return false;
-			}
+				// Check if we're not out of bounds
+				if($tmp1[0] <= 0 || $tmp1[0] > self::WIDTH || $tmp1[1] <= 0 || $tmp1[1] > self::HEIGHT) {
+					return false;
+				}
+				
+				// Check if it's not overlapping other position
+				if($this->getPosition($tmp1) != self::WATER) {
+					return false;
+				}
 
-			$allPositionsX[] = $tmp1[0];
-			$allPositionsY[] = $tmp1[1];
+				$allPositionsX[] = $tmp1[0];
+				$allPositionsY[] = $tmp1[1];
+			}
 		}
-
+		
 		// Since the positions are all in a line we can check this by removing the duplicates and check if they were all iqual
 		$allPositionsX = array_unique($allPositionsX);
 		$allPositionsY = array_unique($allPositionsY);

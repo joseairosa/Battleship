@@ -1,10 +1,10 @@
 <?php
  /**
- * Created by Bluekora - Agência Web & Comunicação, Lda.
+ * Created by José P. Airosa (me@joseairosa.com)
  * Developer: José P. Airosa
  * Date: 07/11/11
  * Time: 23:52
- * Description:
+ * Description: Auxiliary wrapper based on the Adapter design pattern that loads ships objects
  */
  
 class Loader extends ObjectAbstract {

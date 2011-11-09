@@ -1,6 +1,6 @@
 <?php
  /**
- * Created by Bluekora - Agência Web & Comunicação, Lda.
+ * Created by José P. Airosa (me@joseairosa.com)
  * Developer: José P. Airosa
  * Date: 07/11/11
  * Time: 23:41

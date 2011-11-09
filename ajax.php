@@ -6,6 +6,7 @@ if(isset($_POST) && !empty($_POST)) {
 		$ge = new GameEngine();
 		switch($_POST['command']) {
 			case 'setPosition':
+				// Set a given position by analysing it
 				if(!$ge->checkPosition($_POST['position'])) {
 					echo "error";
 				} else {
@@ -13,13 +14,16 @@ if(isset($_POST) && !empty($_POST)) {
 				}
 				break;
 			case 'setRandomBoard':
+				// Apply random board
 				$ge->clearBoard('player');
 				echo json_encode($ge->placeRandom($_POST['board']));
 				break;
 			case 'attack':
-				echo json_encode(array('result' => $ge->attack($_POST['position']), 'gameover' => $ge->isGameOver()));
+				// Player attack
+				echo json_encode(array('result' => $ge->attack($_POST['position']),'position' => $_POST['position'],'gameover' => $ge->isGameOver()));
 				break;
 			case 'computerAttack':
+				// Computer attack
 				echo json_encode(array('result' => $ge->computerAttack(), 'gameover' => $ge->isGameOver()));
 				break;
 		}

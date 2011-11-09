@@ -31,6 +31,12 @@ FEATURES
 
 ======
 
+IMPROVEMENTS
+
+* The initial AI attack algorithm will only attempt to do 1 inteligent attack after it notices that it hit a ship. It should, with more code, attack until it hits again
+
+======
+
 KNOWN BUGS
 
 * Sometimes the random placing algorythm will enter a deadlock

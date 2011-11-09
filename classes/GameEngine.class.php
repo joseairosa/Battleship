@@ -67,7 +67,9 @@ class GameEngine extends ObjectAbstract {
 	 */
 	public function clearBoards() {
 		@unlink("db/player");
+		@unlink("db/player_attacks");
 		@unlink("db/computer");
+		@unlink("db/computer_attacks");
 		$this->setBoardData(null);
 	}
 
@@ -79,11 +81,12 @@ class GameEngine extends ObjectAbstract {
 	 */
 	public function clearBoard($boardName) {
 		@unlink("db/".$boardName);
+		@unlink("db/".$boardName."_attacks");
 		$this->setBoardData(null);
 	}
 
 	/**
-	 * Place random ships around the board algorythm
+	 * Place random ships around the board algorithm
 	 *
 	 * @param string $boardName Board name
 	 * @return string
@@ -162,6 +165,7 @@ class GameEngine extends ObjectAbstract {
 	/**
 	 * Get the given position or return false if something bad happens
 	 *
+	 * @todo Implement cache support
 	 * @param $position
 	 * @return bool
 	 */
@@ -189,9 +193,10 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
-	 * Attack!!!!
+	 * Attack!!!! Yarrrrr!!
 	 * Yup, that's all this does... but it does it well :P
 	 *
+	 * @todo Clean this code enphatizing code re-use
 	 * @param $position
 	 * @return string
 	 */
@@ -203,6 +208,10 @@ class GameEngine extends ObjectAbstract {
 			$positionArray = $this->getShipPositionArray();
 
 			$gameDataArray[$positionArray[0]][$positionArray[1]] = self::HIT;
+
+			// Store last attack info
+			$this->setLastAttackPositionArray($positionArray);
+
 			$this->setBoardData($gameDataArray);
 			$this->saveData();
 
@@ -214,6 +223,10 @@ class GameEngine extends ObjectAbstract {
 			$positionArray = $this->getShipPositionArray();
 
 			$gameDataArray[$positionArray[0]][$positionArray[1]] = self::MISS;
+
+			// Store last attack info
+			$this->setLastAttackPositionArray($positionArray);
+
 			$this->setBoardData($gameDataArray);
 			$this->saveData();
 			return self::WATER;
@@ -224,14 +237,61 @@ class GameEngine extends ObjectAbstract {
 	/**
 	 * Computer attack logic goes here
 	 *
-	 * @todo For now it's random attack only but it will be implemented a better than random attack logic
+	 * @todo Improve the logic on the attacks, at this point if it finds that the last attack was successfull it will try 1 time around. However it should try to attack until it hits again
 	 * @return array
 	 */
 	public function computerAttack() {
+		// Load attack history for the computer on the player board
+		$this->loadAttackHistoryData("player");
 		do {
-			$positionArray = $this->getRandomPosition();
-			$positionString = 'player-'.$positionArray[0].'x'.$positionArray[1];
-			$squareInfo = $this->getPosition($positionString);
+			$overrideRandomAttack = false;
+			$squareInfo = "";
+			if(is_array($this->getAttackHistory())) {
+				// Get last attack performed by the computer
+				$lastAttackArray = explode("x",end($this->getAttackHistory()));
+				$positionString = 'player-'.$lastAttackArray[0].'x'.$lastAttackArray[1];
+				$squareInfo = $this->getPosition($positionString);
+				// If last position hit, try to go around it
+				if($squareInfo == self::HIT) {
+					// Choose a random attack vector
+					$attackDirection = rand(1,4);
+					switch($attackDirection) {
+						case 1:
+							if($lastAttackArray[0]+1 > self::WIDTH)
+								$newAttackOrderArray = array($lastAttackArray[0]-1,$lastAttackArray[1]);
+							else
+								$newAttackOrderArray = array($lastAttackArray[0]+1,$lastAttackArray[1]);
+							break;
+						case 2:
+							if($lastAttackArray[1]+1 > self::HEIGHT)
+								$newAttackOrderArray = array($lastAttackArray[0],$lastAttackArray[1]-1);
+							else
+								$newAttackOrderArray = array($lastAttackArray[0],$lastAttackArray[1]+1);
+							break;
+						case 3:
+							if($lastAttackArray[0]-1 < 1)
+								$newAttackOrderArray = array($lastAttackArray[0]+1,$lastAttackArray[1]);
+							else
+								$newAttackOrderArray = array($lastAttackArray[0]-1,$lastAttackArray[1]);
+							break;
+						case 4:
+							if($lastAttackArray[1]-1 < 1)
+								$newAttackOrderArray = array($lastAttackArray[0],$lastAttackArray[1]+1);
+							else
+								$newAttackOrderArray = array($lastAttackArray[0],$lastAttackArray[1]-1);
+							break;
+					}
+					$positionString = 'player-'.$newAttackOrderArray[0].'x'.$newAttackOrderArray[1];
+					$squareInfo = $this->getPosition($positionString);
+					// If we attack with computer AI we don't need to attack randomly
+					$overrideRandomAttack = true;
+				}
+			}
+			if(!$overrideRandomAttack) {
+				$positionArray = $this->getRandomPosition();
+				$positionString = 'player-'.$positionArray[0].'x'.$positionArray[1];
+				$squareInfo = $this->getPosition($positionString);
+			}
 		} while($squareInfo == self::HIT && $squareInfo == self::MISS);
 		return array('result' => $this->attack($positionString), 'position' => $positionString);
 	}
@@ -248,7 +308,7 @@ class GameEngine extends ObjectAbstract {
 		$tmp = array();
 		if(is_null($boardName)) {
 			$gameDataArray = $this->getBoardData();
-			// Nice and easy way to optimize the algorythm but concatenating the struture to a unique array...
+			// Nice and easy way to optimize the algorithm but concatenating the struture to a unique array...
 			foreach($gameDataArray as $gameDataLineArray) {
 				$tmp = array_unique(array_merge($tmp,$gameDataLineArray));
 			}
@@ -396,6 +456,22 @@ class GameEngine extends ObjectAbstract {
 	}
 
 	/**
+	 * Load attack history from database
+	 *
+	 * @param null $boardName
+	 * @return void
+	 */
+	public function loadAttackHistoryData($boardName = null) {
+		if(!is_null($boardName)) {
+			$this->setBoardName($boardName);
+		}
+		if(file_exists("db/".$this->getBoardName()."_attacks")) {
+			$content = @file_get_contents("db/".$this->getBoardName()."_attacks");
+			$this->setAttackHistory(array_filter(explode("\n",$content)));
+		}
+	}
+
+	/**
 	 * Load database data and store it in memory
 	 *
 	 * @param null $boardName
@@ -412,6 +488,8 @@ class GameEngine extends ObjectAbstract {
 
 				$this->setBoardData($this->convertStringToStructure($content));
 			}
+			// Check if we have an attack history
+			$this->loadAttackHistoryData($boardName);
 		} else {
 			$this->setBoardData(self::fillWithWater());
 		}
@@ -429,6 +507,10 @@ class GameEngine extends ObjectAbstract {
 			$this->setBoardName($boardName);
 		}
 		$tmp = $this->convertStructureToString($this->getBoardData());
+		// Check if we should store
+		if($this->getLastAttackPositionArray() != "") {
+			@file_put_contents("db/".$this->getBoardName()."_attacks",implode("x",$this->getLastAttackPositionArray())."\n",FILE_APPEND | LOCK_EX);
+		}
 		@file_put_contents("db/".$this->getBoardName(),implode("\n",$tmp));
 	}
 

@@ -33,13 +33,23 @@ FEATURES
 
 IMPROVEMENTS
 
-* The initial AI attack algorithm will only attempt to do 1 inteligent attack after it notices that it hit a ship. It should, with more code, attack until it hits again
+* The initial AI attack algorithm will only attempt to do 1 inteligent attack after it notices that it hit a ship. It should, with more code, attack until it hits again.
+* Report which ship you have just sunk
 
 ======
 
 KNOWN BUGS
 
-* Sometimes the random placing algorythm will enter a deadlock
+* Sometimes opening the page and the random placing algorythm will enter a deadlock, if this happens refresh the page
+
+======
+
+HOW TO PLAY
+
+* Place your own ships or click place randomly to start your board
+* Click "Start Game" or "Start 3 Turn Game Mode" to start the game
+* Click on the squares on the right board to attack your opponent. If it's blue you've hit water, if it's red you've hit a part of a ship.
+* If you're playing 3 Turn Game Mode you must place 3 attacks before you actually attack your opponent.
 
 ======
 
